@@ -15,7 +15,7 @@ android {
         // Variables
         buildConfigField "String", "BASE_URL", "\"https://yu5me3d3q2.execute-api.us-east-2.amazonaws.com/dev/\""
         buildConfigField "String", "READ", "\"read/\""
-        buildConfigField "String", "TEMPERATURE", "\"temperature/\""
+        buildConfigField "String", "TEMPERATURE", "\"temperature\""
     }
 
     buildTypes {
@@ -61,7 +61,10 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
-    // Weather Icon View
-    compile 'com.github.pwittchen:weathericonview:1.1.0'
+    // Skycons
+    compile project(":SkyconsLibrary")
+
+    // Joda-Time
+    compile 'joda-time:joda-time:2.9.9'
 
 }

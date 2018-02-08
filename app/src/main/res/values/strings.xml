@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Mi Casa</string>
     <string name="action_settings">Settings</string>
+
+    <string name="temperature_placeholder">%d°</string>
+    <string name="humidity_placeholder">Humedad: %d%%</string>
+    <string name="date_placeholder">10:45 AM Mie 07, 2018</string>
 </resources>

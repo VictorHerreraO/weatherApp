@@ -5,6 +5,8 @@ import android.util.Log;
 import com.soyvictorherrera.myhome.domain.GetTemperature;
 import com.soyvictorherrera.myhome.ui.BasePresenter;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +53,10 @@ public class MainActivityPresenter extends BasePresenter<MainActivityPresenter.V
                     if(items.length() > 0) {
                         int newTemp = items.getJSONObject(0).getInt("temperature");
                         getView().updateTemperature(newTemp);
+                        int newHumid = items.getJSONObject(0).getInt("humidity");
+                        getView().updateHumidity(newHumid);
+                        long newTime = items.getJSONObject(0).getLong("timestamp");
+                        getView().updateDateTime(parseMillis(newTime));
                     }
                 } catch (JSONException e1) {
                     Log.e(TAG, "onNext: ", e1);
@@ -59,9 +65,14 @@ public class MainActivityPresenter extends BasePresenter<MainActivityPresenter.V
         });
     }
 
+    private String parseMillis(long millis) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("hh:mm aa EEE d, yyyy");
+        return formatter.print(millis);
+    }
+
     public interface View extends BasePresenter.View {
-        void updateTemperature(float newTemperature);
-        void updateHumidity(float newHumidity);
+        void updateTemperature(int newTemperature);
+        void updateHumidity(int newHumidity);
         void updateDateTime(String newDateTime);
     }
 }
