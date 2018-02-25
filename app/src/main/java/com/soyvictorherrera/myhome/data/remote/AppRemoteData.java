@@ -1,23 +1,23 @@
 package com.soyvictorherrera.myhome.data.remote;
 
-import android.util.Log;
+import android.support.annotation.NonNull;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.soyvictorherrera.myhome.data.AppData;
+import com.soyvictorherrera.myhome.data.entiities.SensorReading;
+
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
-import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by vHerrera on 04/02/2018.
  */
 
-public class AppRemoteData {
+public class AppRemoteData implements AppData {
     private static final String TAG = AppRemoteData.class.getSimpleName();
 
     private Retrofit mRetrofit;
@@ -27,23 +27,12 @@ public class AppRemoteData {
         this.mRetrofit = mRetrofit;
     }
 
-    public Observable<JSONObject> getTemperature(String device) {
+    @Override
+    public Observable<List<SensorReading>> getTemperature(@NonNull String device, Long start, Long end) {
         return mRetrofit
                 .create(WebServices.class)
-                .getTemperature(device, null, null)
-                .map(new Func1<ResponseBody, JSONObject>() {
-                    @Override
-                    public JSONObject call(ResponseBody responseBody) {
-                        try {
-                            JSONObject json = new JSONObject(responseBody.string());
-                            Log.i(TAG, "call: response was " + json.toString());
-                            return json;
-                        } catch (Exception e) {
-                            Log.e(TAG, "call: ", e);
-                            return new JSONObject();
-                        }
-                    }
-                });
+                .getTemperature(device, start, end)
+                .map(getTemperatureResponse -> getTemperatureResponse.getItems());
     }
 
 }

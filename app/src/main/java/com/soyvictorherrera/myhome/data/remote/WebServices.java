@@ -1,6 +1,8 @@
 package com.soyvictorherrera.myhome.data.remote;
 
 import com.soyvictorherrera.myhome.BuildConfig;
+import com.soyvictorherrera.myhome.data.remote.domain.GetTemperatureResponse;
+import com.soyvictorherrera.myhome.domain.GetTemperature;
 
 import javax.annotation.Nonnull;
 
@@ -19,8 +21,8 @@ public interface WebServices {
 
     @Headers("x-api-key: rgitlL9JrB92niEuLtNci4HZkyfStlkV1LGVSZCe")
     @GET(BuildConfig.READ + BuildConfig.TEMPERATURE)
-    Observable<ResponseBody> getTemperature(@Nonnull @Query("device") String device,
-                                            @Query("start") String start,
-                                            @Query("end") String end);
+    Observable<GetTemperatureResponse> getTemperature(@Nonnull @Query("device") String device,
+                                                         @Query("start") Long start,
+                                                         @Query("end") Long end);
 
 }
