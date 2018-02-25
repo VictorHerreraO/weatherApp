@@ -4,7 +4,8 @@ package com.soyvictorherrera.myhome.ui;
  * Created by vHerrera on 04/02/2018.
  */
 
-public class BasePresenter<T extends BasePresenter.View> {
+public abstract class BasePresenter<T extends BasePresenter.View> {
+    protected final String TAG = this.getClass().getSimpleName();
 
     private T mView;
 
