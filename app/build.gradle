@@ -88,4 +88,6 @@ dependencies {
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.16.20'
     annotationProcessor 'org.projectlombok:lombok:1.16.20'
+    // JodaTime
+    compile 'joda-time:joda-time:2.9.9'
 }

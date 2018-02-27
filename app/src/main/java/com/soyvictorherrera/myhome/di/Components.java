@@ -2,6 +2,7 @@ package com.soyvictorherrera.myhome.di;
 
 import com.soyvictorherrera.myhome.ui.activities.MainActivity;
 import com.soyvictorherrera.myhome.ui.fragments.CurrentWeatherFragment;
+import com.soyvictorherrera.myhome.ui.fragments.TodaysWeatherFragment;
 
 import javax.inject.Singleton;
 
@@ -18,4 +19,5 @@ public interface Components {
     void inject(MainActivity activity);
     // Fragments
     void inject(CurrentWeatherFragment fragment);
+    void inject(TodaysWeatherFragment fragment);
 }

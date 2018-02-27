@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.soyvictorherrera.myhome.ui.BaseFragment;
 import com.soyvictorherrera.myhome.ui.fragments.CurrentWeatherFragment;
+import com.soyvictorherrera.myhome.ui.fragments.TodaysWeatherFragment;
 
 /**
  * Created by vHerrera on 25/02/2018.
@@ -14,7 +14,7 @@ import com.soyvictorherrera.myhome.ui.fragments.CurrentWeatherFragment;
 public class MainPagerAdapter extends FragmentPagerAdapter {
 
     private CurrentWeatherFragment currentWeatherFragment;
-    private BaseFragment todaysWeatherFragment;
+    private TodaysWeatherFragment todaysWeatherFragmentFragment;
 
     private final int NUM_ITEMS = 2;
 
@@ -31,10 +31,10 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
                 }
                 return currentWeatherFragment;
             case 1 :
-                if (todaysWeatherFragment == null) {
-                    todaysWeatherFragment = new CurrentWeatherFragment();
+                if (todaysWeatherFragmentFragment == null) {
+                    todaysWeatherFragmentFragment = new TodaysWeatherFragment();
                 }
-                return todaysWeatherFragment;
+                return todaysWeatherFragmentFragment;
             default:
                 return null;
         }

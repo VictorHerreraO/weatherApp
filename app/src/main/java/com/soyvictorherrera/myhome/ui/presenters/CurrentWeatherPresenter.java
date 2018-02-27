@@ -64,6 +64,7 @@ public class CurrentWeatherPresenter extends BasePresenter<CurrentWeatherPresent
         @Override
         public void onError(Throwable e) {
             Log.e(TAG, "onError: ", e);
+            getView().toggleOffline(true);
             onCompleted();
         }
 
