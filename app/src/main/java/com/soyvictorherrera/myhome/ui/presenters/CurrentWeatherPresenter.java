@@ -5,6 +5,7 @@ import android.util.Log;
 import com.soyvictorherrera.myhome.data.entiities.SensorReading;
 import com.soyvictorherrera.myhome.domain.GetTemperature;
 import com.soyvictorherrera.myhome.ui.BasePresenter;
+import com.soyvictorherrera.myhome.ui.contracts.CurrentWeatherContract;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -20,7 +21,7 @@ import rx.Subscriber;
  * Created by vHerrera on 25/02/2018.
  */
 
-public class CurrentWeatherPresenter extends BasePresenter<CurrentWeatherPresenter.View> {
+public class CurrentWeatherPresenter extends BasePresenter<CurrentWeatherContract.View> {
 
     private final GetTemperature getTemperature;
     private final Subscriber<List<SensorReading>> getLastTemperatureSubscriber;
@@ -32,7 +33,7 @@ public class CurrentWeatherPresenter extends BasePresenter<CurrentWeatherPresent
     }
 
     @Override
-    public void setView(CurrentWeatherPresenter.View view) {
+    public void setView(CurrentWeatherContract.View view) {
         super.setView(view);
         getTemperature.setDeviceId("ESP8266_home");
         getTemperature.execute(getLastTemperatureSubscriber);
@@ -73,7 +74,7 @@ public class CurrentWeatherPresenter extends BasePresenter<CurrentWeatherPresent
             try {
                 Log.d(TAG, "onNext: sensorReadings.size is " + sensorReadings.size());
                 if (getView() != null && !sensorReadings.isEmpty()) {
-                    View v = getView();
+                    CurrentWeatherContract.View v = getView();
                     SensorReading lastReading = sensorReadings.get(0);
 
                     v.toggleOffline(false);
@@ -87,12 +88,4 @@ public class CurrentWeatherPresenter extends BasePresenter<CurrentWeatherPresent
         }
     }
 
-    /* C O N T R A C T */
-    public interface View extends BasePresenter.View {
-        void updateTemperature(int newTemperature);
-        void updateHumidity(int newHumidity);
-        void updateDateTime(String newDateTime);
-        void toggleOffline(boolean state);
-        void isLoading(boolean loading);
-    }
 }

@@ -8,6 +8,7 @@ import com.soyvictorherrera.myhome.Utilities.DateTimeUtils;
 import com.soyvictorherrera.myhome.data.entiities.SensorReading;
 import com.soyvictorherrera.myhome.domain.GetTemperature;
 import com.soyvictorherrera.myhome.ui.BasePresenter;
+import com.soyvictorherrera.myhome.ui.contracts.TodaysWeatherContract;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,7 +22,7 @@ import rx.Subscriber;
  * Created by vHerrera on 26/02/2018.
  */
 
-public class TodaysWeatherPresenter extends BasePresenter<TodaysWeatherPresenter.View> {
+public class TodaysWeatherPresenter extends BasePresenter<TodaysWeatherContract.View> {
 
     /* U S E   C A S E S */
     private final  GetTemperature getTemperature;
@@ -49,6 +50,36 @@ public class TodaysWeatherPresenter extends BasePresenter<TodaysWeatherPresenter
         setView(null);
     }
 
+    private List<Entry> averageData(List<SensorReading> sensorReadings) {
+        List<Entry> entries = new ArrayList<>();
+        try {
+            if (sensorReadings != null && !sensorReadings.isEmpty()) {
+                Iterator<SensorReading> iterator = sensorReadings.iterator();
+                while (iterator.hasNext()) {
+                    // Promediar 5 lecturas en una y agregar a nueva lista
+                    int i;
+                    int temperatureSum = 0;
+                    SensorReading reading = null;
+                    for (i = 0; i < 5; i++) {
+                        if (iterator.hasNext()) {
+                            reading = iterator.next();
+                            temperatureSum += reading.getTemperature();
+                        } else  {
+                            break;
+                        }
+                    }
+                    if (reading != null && i > 0) {
+                        // Agregar el promedio al conjunto de datos
+                        entries.add(new Entry(reading.getTimestamp(), (temperatureSum / i)));
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, "averageData: ", ex);
+        }
+        return entries;
+    }
+
     ///////////////////////////
     /* S U B S C R I B E R S */
     ///////////////////////////
@@ -70,22 +101,13 @@ public class TodaysWeatherPresenter extends BasePresenter<TodaysWeatherPresenter
             try {
                 if(getView() != null) {
                     Log.d(TAG, "onNext: sensorReadings.size is " + sensorReadings.size());
-                    List<Entry> entries = new ArrayList<>();
-                    for (SensorReading reading : sensorReadings) {
-                        entries.add(new Entry(reading.getTimestamp(), reading.getTemperature()));
-                    }
-                    getView().plotDataSet(entries);
+                    List<Entry> entries = averageData(sensorReadings);
+                    getView().drawTemperature(entries);
                 }
             } catch (NullPointerException ex) {
                 Log.e(TAG, "onNext: ", ex);
             }
         }
-    }
-
-
-    /* C O N T R A C T */
-    public interface View extends BasePresenter.View {
-        void plotDataSet(List<Entry> entries);
     }
 
 }

@@ -7,6 +7,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.soyvictorherrera.myhome.BaseApplication;
 import com.soyvictorherrera.myhome.R;
 import com.soyvictorherrera.myhome.ui.BaseFragment;
+import com.soyvictorherrera.myhome.ui.contracts.TodaysWeatherContract;
 import com.soyvictorherrera.myhome.ui.presenters.TodaysWeatherPresenter;
 
 import java.util.List;
@@ -19,7 +20,7 @@ import butterknife.BindView;
  * Created by vHerrera on 26/02/2018.
  */
 
-public class TodaysWeatherFragment extends BaseFragment implements TodaysWeatherPresenter.View {
+public class TodaysWeatherFragment extends BaseFragment implements TodaysWeatherContract.View<List<Entry>> {
 
     @BindView(R.id.today_temperatures)
     LineChart todayTemperatures;
@@ -28,6 +29,7 @@ public class TodaysWeatherFragment extends BaseFragment implements TodaysWeather
     TodaysWeatherPresenter mPresenter;
 
     private LineData mData;
+    private final int ANIMATION_DURATION = 2500;
 
     @Override
     protected void initDagger() {
@@ -45,6 +47,7 @@ public class TodaysWeatherFragment extends BaseFragment implements TodaysWeather
     protected void initView() {
         mPresenter.setView(this);
         mPresenter.getTemperatureData();
+        todayTemperatures.getLegend().setEnabled(false);
     }
 
     @Override
@@ -54,15 +57,23 @@ public class TodaysWeatherFragment extends BaseFragment implements TodaysWeather
     }
 
     @Override
-    public void plotDataSet(List<Entry> entries) {
+    public void drawTemperature(List<Entry> entries) {
         LineDataSet dataSet = new LineDataSet(entries, getResources().getString(R.string.temperature));
         // TODO: Style dataset
         dataSet.setFillColor(getResources().getColor(R.color.colorSunYellow));
-        dataSet.setCubicIntensity(10f);
+        dataSet.setFillAlpha(100);
+        dataSet.setColor(getResources().getColor(R.color.colorSunYellow));
+        dataSet.setDrawCircles(false);
+        dataSet.setDrawFilled(true);
 
         mData = new LineData(dataSet);
         todayTemperatures.setData(mData);
-        todayTemperatures.invalidate();
+        todayTemperatures.animateX(ANIMATION_DURATION);
+    }
+
+    @Override
+    public void drawHumidity(List<Entry> entries) {
+
     }
 
 }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.soyvictorherrera.myhome.BaseApplication;
 import com.soyvictorherrera.myhome.R;
 import com.soyvictorherrera.myhome.ui.BaseFragment;
+import com.soyvictorherrera.myhome.ui.contracts.CurrentWeatherContract;
 import com.soyvictorherrera.myhome.ui.presenters.CurrentWeatherPresenter;
 import com.thbs.skycons.library.SunView;
 
@@ -22,7 +23,7 @@ import butterknife.BindView;
  * Created by vHerrera on 25/02/2018.
  */
 
-public class CurrentWeatherFragment extends BaseFragment implements CurrentWeatherPresenter.View {
+public class CurrentWeatherFragment extends BaseFragment implements CurrentWeatherContract.View {
 
     @Inject
     CurrentWeatherPresenter mPresenter;

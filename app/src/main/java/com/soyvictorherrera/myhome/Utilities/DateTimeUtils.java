@@ -28,4 +28,8 @@ public class DateTimeUtils {
         return millis;
     }
 
+    public static String getHourFromMillis(long millis) {
+        return "";
+    }
+
 }
