@@ -8,5 +8,6 @@
     <string name="no_internet_connection">No tienes conexión a internet</string>
     <string name="connecting_with_sensor">Conectando con el sensor</string>
     <string name="temperature">Temperatura</string>
+    <string name="humidity">Humedad</string>
 
 </resources>

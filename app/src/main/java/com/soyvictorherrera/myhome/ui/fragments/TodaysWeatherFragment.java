@@ -24,6 +24,8 @@ public class TodaysWeatherFragment extends BaseFragment implements TodaysWeather
 
     @BindView(R.id.today_temperatures)
     LineChart todayTemperatures;
+    @BindView(R.id.today_humidities)
+    LineChart todayHumidities;
 
     @Inject
     TodaysWeatherPresenter mPresenter;
@@ -59,7 +61,6 @@ public class TodaysWeatherFragment extends BaseFragment implements TodaysWeather
     @Override
     public void drawTemperature(List<Entry> entries) {
         LineDataSet dataSet = new LineDataSet(entries, getResources().getString(R.string.temperature));
-        // TODO: Style dataset
         dataSet.setFillColor(getResources().getColor(R.color.colorSunYellow));
         dataSet.setFillAlpha(100);
         dataSet.setColor(getResources().getColor(R.color.colorSunYellow));
@@ -73,7 +74,16 @@ public class TodaysWeatherFragment extends BaseFragment implements TodaysWeather
 
     @Override
     public void drawHumidity(List<Entry> entries) {
+        LineDataSet dataSet = new LineDataSet(entries, getResources().getString(R.string.humidity));
+        dataSet.setFillColor(getResources().getColor(R.color.colorWetBlue));
+        dataSet.setFillAlpha(100);
+        dataSet.setColor(getResources().getColor(R.color.colorWetBlue));
+        dataSet.setDrawCircles(false);
+        dataSet.setDrawFilled(true);
 
+        mData = new LineData(dataSet);
+        todayHumidities.setData(mData);
+        todayHumidities.animateX(ANIMATION_DURATION);
     }
 
 }

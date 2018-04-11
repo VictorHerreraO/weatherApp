@@ -24,6 +24,9 @@ import rx.Subscriber;
 
 public class TodaysWeatherPresenter extends BasePresenter<TodaysWeatherContract.View> {
 
+    private final static int TEMPERATURE = 100;
+    private final static int HUMIDITY = 101;
+
     /* U S E   C A S E S */
     private final  GetTemperature getTemperature;
 
@@ -50,7 +53,7 @@ public class TodaysWeatherPresenter extends BasePresenter<TodaysWeatherContract.
         setView(null);
     }
 
-    private List<Entry> averageData(List<SensorReading> sensorReadings) {
+    private List<Entry> averageData(List<SensorReading> sensorReadings, int typeOfData) {
         List<Entry> entries = new ArrayList<>();
         try {
             if (sensorReadings != null && !sensorReadings.isEmpty()) {
@@ -58,19 +61,27 @@ public class TodaysWeatherPresenter extends BasePresenter<TodaysWeatherContract.
                 while (iterator.hasNext()) {
                     // Promediar 5 lecturas en una y agregar a nueva lista
                     int i;
-                    int temperatureSum = 0;
+                    int sum = 0;
                     SensorReading reading = null;
                     for (i = 0; i < 5; i++) {
                         if (iterator.hasNext()) {
                             reading = iterator.next();
-                            temperatureSum += reading.getTemperature();
+                            switch (typeOfData) {
+                                case TEMPERATURE:
+                                    sum += reading.getTemperature();
+                                    break;
+                                case HUMIDITY:
+                                    sum += reading.getHumidity();
+                                default:
+                                    sum += 0;
+                            }
                         } else  {
                             break;
                         }
                     }
                     if (reading != null && i > 0) {
                         // Agregar el promedio al conjunto de datos
-                        entries.add(new Entry(reading.getTimestamp(), (temperatureSum / i)));
+                        entries.add(new Entry(reading.getTimestamp(), (sum / i)));
                     }
                 }
             }
@@ -97,12 +108,28 @@ public class TodaysWeatherPresenter extends BasePresenter<TodaysWeatherContract.
         }
 
         @Override
-        public void onNext(List<SensorReading> sensorReadings) {
+        public void onNext(final List<SensorReading> sensorReadings) {
             try {
-                if(getView() != null) {
+                if(getView() != null && sensorReadings != null && !sensorReadings.isEmpty()) {
                     Log.d(TAG, "onNext: sensorReadings.size is " + sensorReadings.size());
-                    List<Entry> entries = averageData(sensorReadings);
-                    getView().drawTemperature(entries);
+                    new Thread() {
+                        @Override
+                        public synchronized void start() {
+                            super.start();
+                            List<Entry> entries = averageData(sensorReadings, TEMPERATURE);
+                            if (getView() != null)
+                                getView().drawTemperature(entries);
+                        }
+                    }.start();
+                    new Thread() {
+                        @Override
+                        public synchronized void start() {
+                            super.start();
+                            List<Entry> entries = averageData(sensorReadings, HUMIDITY);
+                            if (getView()!= null)
+                                getView().drawHumidity(entries);
+                        }
+                    }.start();
                 }
             } catch (NullPointerException ex) {
                 Log.e(TAG, "onNext: ", ex);
