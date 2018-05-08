@@ -3,6 +3,12 @@ package com.soyvictorherrera.myhome.Utilities;
 import android.util.Log;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by vHerrera on 26/02/2018.
@@ -29,7 +35,8 @@ public class DateTimeUtils {
     }
 
     public static String getHourFromMillis(long millis) {
-        return "";
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("hh:mm aa");
+        return fmt.print(new DateTime(millis));
     }
 
 }

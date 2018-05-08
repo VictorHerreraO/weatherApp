@@ -1,12 +1,14 @@
 package com.soyvictorherrera.myhome.ui.fragments;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.soyvictorherrera.myhome.BaseApplication;
 import com.soyvictorherrera.myhome.R;
 import com.soyvictorherrera.myhome.ui.BaseFragment;
+import com.soyvictorherrera.myhome.ui.adapters.PlotDateFormatter;
 import com.soyvictorherrera.myhome.ui.contracts.TodaysWeatherContract;
 import com.soyvictorherrera.myhome.ui.presenters.TodaysWeatherPresenter;
 
@@ -30,8 +32,8 @@ public class TodaysWeatherFragment extends BaseFragment implements TodaysWeather
     @Inject
     TodaysWeatherPresenter mPresenter;
 
-    private LineData mData;
     private final int ANIMATION_DURATION = 2500;
+    private final float CUBIC_INTENSITY = 0.25f;
 
     @Override
     protected void initDagger() {
@@ -49,7 +51,16 @@ public class TodaysWeatherFragment extends BaseFragment implements TodaysWeather
     protected void initView() {
         mPresenter.setView(this);
         mPresenter.getTemperatureData();
-        todayTemperatures.getLegend().setEnabled(false);
+
+        setupPlot(todayTemperatures);
+        setupPlot(todayHumidities);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        todayTemperatures.animateX(ANIMATION_DURATION);
+        todayHumidities.animateX(ANIMATION_DURATION);
     }
 
     @Override
@@ -66,10 +77,10 @@ public class TodaysWeatherFragment extends BaseFragment implements TodaysWeather
         dataSet.setColor(getResources().getColor(R.color.colorSunYellow));
         dataSet.setDrawCircles(false);
         dataSet.setDrawFilled(true);
+        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        dataSet.setCubicIntensity(CUBIC_INTENSITY);
 
-        mData = new LineData(dataSet);
-        todayTemperatures.setData(mData);
-        todayTemperatures.animateX(ANIMATION_DURATION);
+        todayTemperatures.setData(new LineData(dataSet));
     }
 
     @Override
@@ -80,10 +91,17 @@ public class TodaysWeatherFragment extends BaseFragment implements TodaysWeather
         dataSet.setColor(getResources().getColor(R.color.colorWetBlue));
         dataSet.setDrawCircles(false);
         dataSet.setDrawFilled(true);
+        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        dataSet.setCubicIntensity(CUBIC_INTENSITY);
 
-        mData = new LineData(dataSet);
-        todayHumidities.setData(mData);
-        todayHumidities.animateX(ANIMATION_DURATION);
+        todayHumidities.setData(new LineData(dataSet));
+    }
+
+    private void setupPlot(LineChart chart) {
+        chart.getXAxis().setValueFormatter(new PlotDateFormatter());
+        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        chart.getXAxis().setLabelCount(5);
+        chart.getDescription().setEnabled(false);
     }
 
 }
