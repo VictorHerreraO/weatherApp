@@ -1,5 +1,9 @@
 package com.soyvictorherrera.myhome.data;
 
+import com.soyvictorherrera.myhome.data.entiities.SensorReading;
+
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -8,6 +12,6 @@ import rx.Observable;
 
 public interface AppData {
 
-    Observable getTemperature(String device, Long start, Long end);
+    Observable<List<SensorReading>> getSensorReadings(String device, Long start, Long end);
 
 }

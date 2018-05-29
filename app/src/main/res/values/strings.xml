@@ -10,4 +10,6 @@
     <string name="temperature">Temperatura</string>
     <string name="humidity">Humedad</string>
 
+    <string name="database_name">home-db</string>
+
 </resources>

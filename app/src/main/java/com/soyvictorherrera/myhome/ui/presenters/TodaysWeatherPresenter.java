@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.github.mikephil.charting.data.Entry;
 import com.soyvictorherrera.myhome.Utilities.DateTimeUtils;
+import com.soyvictorherrera.myhome.Utilities.PreferenceUtils;
 import com.soyvictorherrera.myhome.data.entiities.SensorReading;
 import com.soyvictorherrera.myhome.domain.GetTemperature;
 import com.soyvictorherrera.myhome.ui.BasePresenter;
@@ -27,26 +28,39 @@ public class TodaysWeatherPresenter extends BasePresenter<TodaysWeatherContract.
     private final static int TEMPERATURE = 100;
     private final static int HUMIDITY = 101;
 
+    private PreferenceUtils mPreferences;
+
     /* U S E   C A S E S */
     private final  GetTemperature getTemperature;
 
     /* S U B S C R I B E R S */
     private final GetTemperatureSubscriber getTemperatureSubscriber;
+    private final GetRemoteSensorReadingSubscriber getRemoteSensorReadingSubscriber;
 
     @Inject
     public TodaysWeatherPresenter(
-            @NonNull GetTemperature getTemperature
+            @NonNull GetTemperature getTemperature,
+            @NonNull PreferenceUtils mPreferences
             ) {
         this.getTemperature = getTemperature;
+        this.mPreferences = mPreferences;
 
         getTemperatureSubscriber = new GetTemperatureSubscriber();
+        getRemoteSensorReadingSubscriber = new GetRemoteSensorReadingSubscriber();
     }
 
     public void getTemperatureData() {
         getTemperature.setDeviceId("ESP8266_home");
-        getTemperature.setStart(DateTimeUtils.getTodayStartInMillis());
-        getTemperature.setEnd(DateTimeUtils.getCurrentMillis());
-        getTemperature.execute(getTemperatureSubscriber);
+        long lastTimeStamp = mPreferences.getLastReadingTimestamp(0);
+        long now = DateTimeUtils.getCurrentMillis();
+        long todayStart = DateTimeUtils.getTodayStartInMillis();
+        if (lastTimeStamp < todayStart) {
+            lastTimeStamp = todayStart;
+        }
+        getTemperature.setOrigin(GetTemperature.ORIGIN_REMOTE_ONLY);
+        getTemperature.setStart(lastTimeStamp);
+        getTemperature.setEnd(now);
+        getTemperature.execute(getRemoteSensorReadingSubscriber);
     }
 
     public void detach() {
@@ -134,6 +148,26 @@ public class TodaysWeatherPresenter extends BasePresenter<TodaysWeatherContract.
             } catch (NullPointerException ex) {
                 Log.e(TAG, "onNext: ", ex);
             }
+        }
+    }
+
+    private final class GetRemoteSensorReadingSubscriber extends Subscriber<List<SensorReading>> {
+        @Override
+        public void onCompleted() {
+            getTemperature.setOrigin(GetTemperature.ORIGIN_LOCAL_ONLY);
+            getTemperature.setStart(DateTimeUtils.getTodayStartInMillis());
+            getTemperature.setEnd(DateTimeUtils.getCurrentMillis());
+            getTemperature.execute(getTemperatureSubscriber);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.e(TAG, "onError: ", e);
+        }
+
+        @Override
+        public void onNext(List<SensorReading> sensorReadings) {
+            Log.d(TAG, "onNext() called with: sensorReadings.size = [" + sensorReadings.size() + "]");
         }
     }
 

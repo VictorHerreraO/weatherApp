@@ -1,6 +1,7 @@
 package com.soyvictorherrera.myhome.domain;
 
 import com.soyvictorherrera.myhome.data.entiities.SensorReading;
+import com.soyvictorherrera.myhome.data.local.AppLocalData;
 import com.soyvictorherrera.myhome.data.remote.AppRemoteData;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import rx.Observable;
 
@@ -18,7 +20,11 @@ import rx.Observable;
 
 public class GetTemperature extends BaseUseCase {
 
+    public static final int ORIGIN_REMOTE_ONLY = 201;
+    public static final int ORIGIN_LOCAL_ONLY = 200;
+
     private AppRemoteData mRemoteData;
+    private AppLocalData mLocalData;
 
     @Getter
     @Setter
@@ -29,15 +35,30 @@ public class GetTemperature extends BaseUseCase {
     @Getter
     @Setter
     private Long end;
+    @Setter
+    private int origin;
 
     @Inject
-    public GetTemperature(@Nonnull AppRemoteData mRemoteData) {
+    public GetTemperature(@Nonnull AppRemoteData mRemoteData, @NonNull AppLocalData mLocalData) {
         this.mRemoteData = mRemoteData;
+        this.mLocalData = mLocalData;
     }
 
     @Override
     protected Observable<List<SensorReading>> buildObservableUseCase() {
-        return mRemoteData.getTemperature(deviceId, start, end);
+        switch (origin) {
+            case ORIGIN_REMOTE_ONLY:
+                origin = 0;
+                return mRemoteData.getSensorReadings(deviceId, start, end);
+            case ORIGIN_LOCAL_ONLY:
+                origin = 0;
+                return mLocalData.getSensorReadings(deviceId, start, end);
+            default:
+                return Observable.concat(
+                        mRemoteData.getSensorReadings(deviceId, start, end),
+                        mLocalData.getSensorReadings(deviceId, start, end)
+                );
+        }
     }
 
 }

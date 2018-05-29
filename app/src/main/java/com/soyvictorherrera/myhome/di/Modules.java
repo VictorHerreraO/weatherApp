@@ -8,7 +8,12 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.soyvictorherrera.myhome.BuildConfig;
+import com.soyvictorherrera.myhome.R;
 import com.soyvictorherrera.myhome.Utilities.PreferenceUtils;
+import com.soyvictorherrera.myhome.data.entiities.DaoMaster;
+import com.soyvictorherrera.myhome.data.entiities.DaoSession;
+
+import org.greenrobot.greendao.database.Database;
 
 import javax.inject.Singleton;
 
@@ -28,7 +33,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Modules {
 
 
-    // Preferéncias:
+    // Preferencias:
     @Provides
     @Singleton
     SharedPreferences providesSharedPreferences(Application application) {
@@ -76,6 +81,15 @@ public class Modules {
                 .baseUrl(BuildConfig.BASE_URL)
                 .client(okHttpClient)
                 .build();
+    }
+
+    // Almacenamiento local
+    @Provides
+    @Singleton
+    DaoSession providesDaoSession(Application application) {
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(application, application.getString(R.string.database_name));
+        Database db = helper.getWritableDb();
+        return new DaoMaster(db).newSession();
     }
 
 }

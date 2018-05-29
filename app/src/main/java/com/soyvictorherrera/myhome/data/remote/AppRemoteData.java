@@ -1,9 +1,12 @@
 package com.soyvictorherrera.myhome.data.remote;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.soyvictorherrera.myhome.data.AppData;
 import com.soyvictorherrera.myhome.data.entiities.SensorReading;
+import com.soyvictorherrera.myhome.data.local.AppLocalData;
+import com.soyvictorherrera.myhome.data.remote.domain.GetTemperatureResponse;
 
 import java.util.List;
 
@@ -21,18 +24,22 @@ public class AppRemoteData implements AppData {
     private static final String TAG = AppRemoteData.class.getSimpleName();
 
     private Retrofit mRetrofit;
+    private AppLocalData mLocalData;
 
     @Inject
-    public AppRemoteData(@Nonnull Retrofit mRetrofit) {
+    public AppRemoteData(@Nonnull Retrofit mRetrofit, @NonNull AppLocalData mLocalData) {
         this.mRetrofit = mRetrofit;
+        this.mLocalData = mLocalData;
     }
 
     @Override
-    public Observable<List<SensorReading>> getTemperature(@NonNull String device, Long start, Long end) {
+    public Observable<List<SensorReading>> getSensorReadings(@NonNull String device, Long start, Long end) {
+        Log.d(TAG, "getSensorReadings() called with: device = [" + device + "], start = [" + start + "], end = [" + end + "]");
         return mRetrofit
                 .create(WebServices.class)
                 .getTemperature(device, start, end)
-                .map(getTemperatureResponse -> getTemperatureResponse.getItems());
+                .map(GetTemperatureResponse::getItems)
+                .doOnNext(mLocalData::saveSensorReadings);
     }
 
 }
