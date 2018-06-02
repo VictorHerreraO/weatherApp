@@ -102,6 +102,7 @@ public class TodaysWeatherFragment extends BaseFragment implements TodaysWeather
         chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         chart.getXAxis().setLabelCount(5);
         chart.getDescription().setEnabled(false);
+        chart.getLegend().setEnabled(false);
     }
 
 }

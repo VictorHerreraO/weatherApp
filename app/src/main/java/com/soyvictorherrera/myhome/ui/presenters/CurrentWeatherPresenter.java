@@ -36,6 +36,7 @@ public class CurrentWeatherPresenter extends BasePresenter<CurrentWeatherContrac
     public void setView(CurrentWeatherContract.View view) {
         super.setView(view);
         getTemperature.setDeviceId("ESP8266_home");
+        getTemperature.setOrigin(GetTemperature.ORIGIN_REMOTE_ONLY);
         getTemperature.execute(getLastTemperatureSubscriber);
     }
 
