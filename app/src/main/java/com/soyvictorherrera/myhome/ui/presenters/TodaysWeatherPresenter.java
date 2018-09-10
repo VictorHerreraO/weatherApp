@@ -67,7 +67,7 @@ public class TodaysWeatherPresenter extends BasePresenter<TodaysWeatherContract.
         setView(null);
     }
 
-    private List<Entry> averageData(List<SensorReading> sensorReadings, int typeOfData) {
+    private List<Entry> averageData(List<SensorReading> sensorReadings, final int dataType) {
         List<Entry> entries = new ArrayList<>();
         try {
             if (sensorReadings != null && !sensorReadings.isEmpty()) {
@@ -80,7 +80,7 @@ public class TodaysWeatherPresenter extends BasePresenter<TodaysWeatherContract.
                     for (i = 0; i < 5; i++) {
                         if (iterator.hasNext()) {
                             reading = iterator.next();
-                            switch (typeOfData) {
+                            switch (dataType) {
                                 case TEMPERATURE:
                                     sum += reading.getTemperature();
                                     break;
