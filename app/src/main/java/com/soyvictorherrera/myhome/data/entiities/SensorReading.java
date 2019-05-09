@@ -18,7 +18,7 @@ import org.greenrobot.greendao.annotation.NotNull;
 })
 public class SensorReading {
 
-    @Id
+    @Id(autoincrement = true)
     private Long id;
     @SerializedName("humidity")
     @Expose

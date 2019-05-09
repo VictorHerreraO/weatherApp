@@ -50,7 +50,7 @@ public class TodaysWeatherPresenter extends BasePresenter<TodaysWeatherContract.
     }
 
     public void getTemperatureData() {
-        getTemperature.setDeviceId("ESP8266_home");
+        getTemperature.setDeviceId("");
         long lastTimeStamp = mPreferences.getLastReadingTimestamp(0);
         long now = DateTimeUtils.getCurrentMillis();
         long todayStart = DateTimeUtils.getTodayStartInMillis();

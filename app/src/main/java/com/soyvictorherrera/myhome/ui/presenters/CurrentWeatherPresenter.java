@@ -12,7 +12,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
+import android.support.annotation.NonNull;
 import javax.inject.Inject;
 
 import rx.Subscriber;
@@ -27,7 +27,7 @@ public class CurrentWeatherPresenter extends BasePresenter<CurrentWeatherContrac
     private final Subscriber<List<SensorReading>> getLastTemperatureSubscriber;
 
     @Inject
-    public CurrentWeatherPresenter(@Nonnull GetTemperature getTemperature) {
+    public CurrentWeatherPresenter(@NonNull GetTemperature getTemperature) {
         this.getTemperature = getTemperature;
         getLastTemperatureSubscriber = new GetLastTemperatureSubscriber();
     }

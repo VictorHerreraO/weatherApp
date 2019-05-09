@@ -2,8 +2,7 @@ package com.soyvictorherrera.myhome.Utilities;
 
 import android.content.SharedPreferences;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import android.support.annotation.NonNull;
 import javax.inject.Inject;
 
 /**
@@ -17,7 +16,7 @@ public class PreferenceUtils {
     private SharedPreferences.Editor mEditor;
 
     @Inject
-    public PreferenceUtils(@Nonnull SharedPreferences mPreferences) {
+    public PreferenceUtils(@NonNull SharedPreferences mPreferences) {
         this.mPreferences = mPreferences;
         this.mEditor = mPreferences.edit();
     }

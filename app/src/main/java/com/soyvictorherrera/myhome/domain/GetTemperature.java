@@ -6,11 +6,10 @@ import com.soyvictorherrera.myhome.data.remote.AppRemoteData;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
+import android.support.annotation.NonNull;
 import javax.inject.Inject;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import rx.Observable;
 
@@ -39,7 +38,7 @@ public class GetTemperature extends BaseUseCase {
     private int origin;
 
     @Inject
-    public GetTemperature(@Nonnull AppRemoteData mRemoteData, @NonNull AppLocalData mLocalData) {
+    public GetTemperature(@NonNull AppRemoteData mRemoteData, @NonNull AppLocalData mLocalData) {
         this.mRemoteData = mRemoteData;
         this.mLocalData = mLocalData;
     }
@@ -49,13 +48,13 @@ public class GetTemperature extends BaseUseCase {
         switch (origin) {
             case ORIGIN_REMOTE_ONLY:
                 origin = 0;
-                return mRemoteData.getSensorReadings(deviceId, start, end);
+                return mRemoteData.getSensorReadings(start, end);
             case ORIGIN_LOCAL_ONLY:
                 origin = 0;
                 return mLocalData.getSensorReadings(deviceId, start, end);
             default:
                 return Observable.concat(
-                        mRemoteData.getSensorReadings(deviceId, start, end),
+                        mRemoteData.getSensorReadings(start, end),
                         mLocalData.getSensorReadings(deviceId, start, end)
                 );
         }
